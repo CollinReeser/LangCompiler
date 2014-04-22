@@ -1,0 +1,13 @@
+
+func fib(stop)
+{
+    cur = 1;
+    curPrev = 1;
+    while (cur < stop)
+    {
+        print cur;
+        temp = cur;
+        cur = cur + curPrev;
+        curPrev = temp;
+    }
+}
