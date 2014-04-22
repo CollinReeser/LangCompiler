@@ -1,0 +1,3 @@
+[submodule "parserGenerator"]
+	path = parserGenerator
+	url = https://github.com/CollinReeser/ParserGenerator.git
