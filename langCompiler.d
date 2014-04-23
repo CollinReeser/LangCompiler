@@ -158,7 +158,9 @@ private:
             curFunc.funcBody ~= "    mov    " ~ varLoc ~ ", eax\n";
             break;
         case "WHILEBLOCK":
-            static whileInst = 0;
+            static whileInstStatic = 0;
+            auto whileInst = whileInstStatic;
+            whileInstStatic++;
             curFunc.funcBody ~= "    jmp    .whileCond_" ~ whileInst.to!string ~ "\n";
             curFunc.funcBody ~= ".while_" ~ whileInst.to!string ~ ":\n";
             compile(node.children[1]);
@@ -168,10 +170,11 @@ private:
             curFunc.funcBody ~= "    pop    eax\n";
             curFunc.funcBody ~= "    test   eax, eax\n";
             curFunc.funcBody ~= "    jne     .while_" ~ whileInst.to!string ~ "\n";
-            whileInst++;
             break;
         case "IFBLOCK":
-            static ifInst = 0;
+            static ifInstStatic = 0;
+            auto ifInst = ifInstStatic;
+            ifInstStatic++;
             compile(node.children[0]);
             curFunc.funcBody ~= "    ; Checking if-expression trueness\n";
             curFunc.funcBody ~= "    pop    eax\n";
@@ -183,7 +186,6 @@ private:
             curFunc.funcBody ~= ".if_" ~ ifInst.to!string ~ "Else:\n";
             compile(node.children[2]);
             curFunc.funcBody ~= ".if_" ~ ifInst.to!string ~ "End:\n";
-            ifInst++;
             break;
         case "EXPRESSION":
             compile(node.children[0]);
@@ -234,16 +236,16 @@ private:
                     break;
                 case "/":
                     curFunc.funcBody ~= "    mov    edx, 0\n";
-                    curFunc.funcBody ~= "    div    bx\n";
-                    curFunc.funcBody ~= "    shl    eax, 16\n";
-                    curFunc.funcBody ~= "    shr    eax, 16\n";
+                    curFunc.funcBody ~= "    div    ebx\n";
+                    //curFunc.funcBody ~= "    shl    eax, 16\n";
+                    //curFunc.funcBody ~= "    shr    eax, 16\n";
                     curFunc.funcBody ~= "    push   eax\n";
                     break;
                 case "%":
                     curFunc.funcBody ~= "    mov    edx, 0\n";
-                    curFunc.funcBody ~= "    div    bx\n";
-                    curFunc.funcBody ~= "    shl    edx, 16\n";
-                    curFunc.funcBody ~= "    shr    edx, 16\n";
+                    curFunc.funcBody ~= "    div    ebx\n";
+                    //curFunc.funcBody ~= "    shl    edx, 16\n";
+                    //curFunc.funcBody ~= "    shr    edx, 16\n";
                     curFunc.funcBody ~= "    push   edx\n";
                     break;
                 }
@@ -264,6 +266,9 @@ private:
             auto varLoc = getVarLoc(identifier);
             curFunc.funcBody ~= "    mov    eax, " ~ varLoc ~ "\n";
             curFunc.funcBody ~= "    push   eax\n";
+            break;
+        case "PARENEXPR":
+            compile(node.children[0]);
             break;
         case "LOGICEXPR":
             static logicInst = 0;
@@ -337,7 +342,7 @@ private:
                     break;
                 case "<=":
                     curFunc.funcBody ~= "    cmp    eax, ebx\n";
-                    curFunc.funcBody ~= "    jgt    .OP_fail_" ~ logicRelInst.to!string ~ "\n";
+                    curFunc.funcBody ~= "    jg     .OP_fail_" ~ logicRelInst.to!string ~ "\n";
                     curFunc.funcBody ~= "    push   dword 1\n";
                     curFunc.funcBody ~= "    jmp    .OP_end_" ~ logicRelInst.to!string ~ "\n";
                     curFunc.funcBody ~= ".OP_fail_" ~ logicRelInst.to!string ~ ":\n";
@@ -346,7 +351,7 @@ private:
                     break;
                 case ">=":
                     curFunc.funcBody ~= "    cmp    eax, ebx\n";
-                    curFunc.funcBody ~= "    jlt    .OP_fail_" ~ logicRelInst.to!string ~ "\n";
+                    curFunc.funcBody ~= "    jl     .OP_fail_" ~ logicRelInst.to!string ~ "\n";
                     curFunc.funcBody ~= "    push   dword 1\n";
                     curFunc.funcBody ~= "    jmp    .OP_end_" ~ logicRelInst.to!string ~ "\n";
                     curFunc.funcBody ~= ".OP_fail_" ~ logicRelInst.to!string ~ ":\n";

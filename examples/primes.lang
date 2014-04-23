@@ -1,0 +1,53 @@
+func primes(end)
+{
+    cur = 2;
+    print cur;
+    cur = 3;
+    counter = 2;
+    exit = 0;
+    counterLimit = 0;
+    iter = 10;
+    while (cur <= end)
+    {
+        counterLimit = cur / 2;
+        count = 0;
+        if (cur < 50)
+        {
+        }
+        else
+        {
+            while (count < iter)
+            {
+                counterLimit = (counterLimit + (cur / counterLimit)) / 2;
+                count = count + 1;
+            }
+            sqrt = sqrt + 1;
+        }
+        if (exit == 0)
+        {
+            if (counter <= counterLimit)
+            {
+                if (cur % counter == 0)
+                {
+                    exit = 1;
+                }
+                else
+                {
+                    counter = counter + 1;
+                }
+            }
+            else
+            {
+                print cur;
+                cur = cur + 1;
+                counter = 2;
+            }
+        }
+        else
+        {
+            exit = 0;
+            cur = cur + 1;
+            counter = 2;
+        }
+    }
+}
