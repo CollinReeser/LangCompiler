@@ -290,9 +290,9 @@ private:
                     curFunc.funcBody ~= "    je     .AND_wrong_" ~ logicInst.to!string ~ "\n";
                     curFunc.funcBody ~= "    push   dword 1\n";
                     curFunc.funcBody ~= "    jmp    .AND_end_" ~ logicInst.to!string ~ "\n";
-                    curFunc.funcBody ~= ".AND_wrong_" ~ logicInst.to!string ~ "\n";
+                    curFunc.funcBody ~= ".AND_wrong_" ~ logicInst.to!string ~ ":\n";
                     curFunc.funcBody ~= "    push   dword 0\n";
-                    curFunc.funcBody ~= ".AND_end_" ~ logicInst.to!string ~ "\n";
+                    curFunc.funcBody ~= ".AND_end_" ~ logicInst.to!string ~ ":\n";
                     break;
                 case "||":
                     curFunc.funcBody ~= "    test   eax, eax\n";
@@ -301,9 +301,9 @@ private:
                     curFunc.funcBody ~= "    jne    .OR_right_" ~ logicInst.to!string ~ "\n";
                     curFunc.funcBody ~= "    push   dword 0\n";
                     curFunc.funcBody ~= "    jmp    .OR_end_" ~ logicInst.to!string ~ "\n";
-                    curFunc.funcBody ~= ".OR_right_" ~ logicInst.to!string ~ "\n";
+                    curFunc.funcBody ~= ".OR_right_" ~ logicInst.to!string ~ ":\n";
                     curFunc.funcBody ~= "    push   dword 1\n";
-                    curFunc.funcBody ~= ".OR_end_" ~ logicInst.to!string ~ "\n";
+                    curFunc.funcBody ~= ".OR_end_" ~ logicInst.to!string ~ ":\n";
                     break;
                 }
             }
