@@ -27,3 +27,14 @@ fibonacciIterative.asm: fibonacciIterative.lang
 
 fibonacciIterative: fibonacciIterative.o fibonacciIterativeCall.c
 	gcc -m32 -o fibonacciIterative fibonacciIterativeCall.c fibonacciIterative.o
+
+realclean:
+	-rm hailstone.o
+	-rm hailstone.asm
+	-rm hailstone
+	-rm primes.o
+	-rm primes.asm
+	-rm primes
+	-rm fibonacciIterative.o
+	-rm fibonacciIterative.asm
+	-rm fibonacciIterative
