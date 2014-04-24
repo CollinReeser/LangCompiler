@@ -1,5 +1,5 @@
 
-all: hailstone primes fibonacciIterative
+all: hailstone primes fibonacciIterative funcTest
 
 hailstone.o: hailstone.asm
 	nasm -f elf hailstone.asm
@@ -28,6 +28,15 @@ fibonacciIterative.asm: fibonacciIterative.lang
 fibonacciIterative: fibonacciIterative.o fibonacciIterativeCall.c
 	gcc -m32 -o fibonacciIterative fibonacciIterativeCall.c fibonacciIterative.o
 
+funcTest.o: funcTest.asm
+	nasm -f elf funcTest.asm
+
+funcTest.asm: funcTest.lang
+	../langCompiler < funcTest.lang > funcTest.asm
+
+funcTest: funcTest.o funcTestCall.c
+	gcc -m32 -o funcTest funcTestCall.c funcTest.o
+
 realclean:
 	-rm hailstone.o
 	-rm hailstone.asm
@@ -38,3 +47,6 @@ realclean:
 	-rm fibonacciIterative.o
 	-rm fibonacciIterative.asm
 	-rm fibonacciIterative
+	-rm funcTest.o
+	-rm funcTest.asm
+	-rm funcTest

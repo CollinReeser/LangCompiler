@@ -11,17 +11,27 @@ statement :: assignment
            | pass
            | block
            | print
-           | yield ;
+           | yield
+           | returnStmt
+           ;
+
 assignment :: ^identifier #"=" expression #terminator ;
 pass :: #"pass" #terminator ;
 ifblock :: #"if" #"\(" logicExpr #"\)" statement #"else" statement ;
 whileblock :: #"while" #"\(" logicExpr #"\)" statement ;
 
+
+paramList :: #"\(" expression ? ^commaParam * #"\)" ;
+commaParam :: #"," expression ;
+funcCall :: ^identifier paramList;
+
+returnStmt :: # "return" expression #terminator ;
+
 print :: #"print" ^identifier #terminator ;
 
 yield :: #"yield" #terminator ;
 
-expression :: sum ;
+expression :: funcCall | sum ;
 sum :: product ^sumOpProduct* ;
 sumOpProduct :: ^sumOp product ;
 product :: value ^mulOpValue* ;

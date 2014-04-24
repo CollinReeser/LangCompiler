@@ -380,6 +380,36 @@ private:
             }
             logicRelInst++;
             break;
+        case "PARAMLIST":
+            // Reverse because the calling convention for C is the leftmost
+            // argument to a func call is pushed last to the stack
+            foreach_reverse (expr; node.children)
+            {
+                compile(expr);
+            }
+            break;
+        case "FUNCCALL":
+            auto funcToCall = (cast(ASTTerminal)node.children[0]).token;
+            auto numParams = (cast(ASTNonTerminal)node.children[1]).children.length;
+            // Parameter list
+            compile(node.children[1]);
+            // All params should be on the stack now
+            curFunc.funcBody ~= "    call   " ~ funcToCall ~ "\n";
+            // Cleanup params on stack
+            curFunc.funcBody ~= "    add    esp, " ~ (numParams * 4).to!string ~ "\n";
+            // Push result of function to stack. Result in eax
+            curFunc.funcBody ~= "    push   eax\n";
+            break;
+        case "RETURNSTMT":
+            // Compile expression node
+            compile(node.children[0]);
+            // Get return value
+            curFunc.funcBody ~= "    pop    eax\n";
+            // Return!
+            curFunc.funcBody ~= "    mov    esp, ebp    ; takedown stack frame\n";
+            curFunc.funcBody ~= "    pop    ebp\n";
+            curFunc.funcBody ~= "    ret\n";
+            break;
         case "YIELD":
             break;
         default:

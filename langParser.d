@@ -410,6 +410,10 @@ private:
         {
             collectedNodes++;
         }
+        else if (returnStmt())
+        {
+            collectedNodes++;
+        }
         else
         {
             stack = stack[0..$-collectedNodes];
@@ -820,6 +824,240 @@ private:
         stack ~= nonTerminal;
         return true;
     }
+    bool paramList()
+    {
+        debug (TRACE) mixin(tracer);
+        uint saveIndex = index;
+        bool paramListLiteral_1()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^\(`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        bool paramListLiteral_2()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^\)`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        uint collectedNodes = 0;
+        if (paramListLiteral_1())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (expression())
+        {
+            collectedNodes++;
+        }
+        while (commaParam())
+        {
+            auto tempNode = cast(ASTNonTerminal)(stack[$-1]);
+            stack = stack[0..$-1];
+            foreach (child; tempNode.children)
+            {
+                stack ~= child;
+            }
+            collectedNodes += tempNode.children.length;
+        }
+        if (paramListLiteral_2())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        auto nonTerminal = new ASTNonTerminal("PARAMLIST");
+        foreach (node; stack[$-collectedNodes..$])
+        {
+            nonTerminal.addChild(node);
+        }
+        stack = stack[0..$-collectedNodes];
+        stack ~= nonTerminal;
+        return true;
+    }
+    bool commaParam()
+    {
+        debug (TRACE) mixin(tracer);
+        uint saveIndex = index;
+        bool commaParamLiteral_1()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^,`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        uint collectedNodes = 0;
+        if (commaParamLiteral_1())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (expression())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        auto nonTerminal = new ASTNonTerminal("COMMAPARAM");
+        foreach (node; stack[$-collectedNodes..$])
+        {
+            nonTerminal.addChild(node);
+        }
+        stack = stack[0..$-collectedNodes];
+        stack ~= nonTerminal;
+        return true;
+    }
+    bool funcCall()
+    {
+        debug (TRACE) mixin(tracer);
+        uint saveIndex = index;
+        uint collectedNodes = 0;
+        if (identifier())
+        {
+            auto tempNode = cast(ASTNonTerminal)(stack[$-1]);
+            stack = stack[0..$-1];
+            foreach (child; tempNode.children)
+            {
+                stack ~= child;
+            }
+            collectedNodes += tempNode.children.length;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (paramList())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        auto nonTerminal = new ASTNonTerminal("FUNCCALL");
+        foreach (node; stack[$-collectedNodes..$])
+        {
+            nonTerminal.addChild(node);
+        }
+        stack = stack[0..$-collectedNodes];
+        stack ~= nonTerminal;
+        return true;
+    }
+    bool returnStmt()
+    {
+        debug (TRACE) mixin(tracer);
+        uint saveIndex = index;
+        bool returnStmtLiteral_1()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^return`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        uint collectedNodes = 0;
+        if (returnStmtLiteral_1())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (expression())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (terminator())
+        {
+            stack = stack[0..$-1];
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        auto nonTerminal = new ASTNonTerminal("RETURNSTMT");
+        foreach (node; stack[$-collectedNodes..$])
+        {
+            nonTerminal.addChild(node);
+        }
+        stack = stack[0..$-collectedNodes];
+        stack ~= nonTerminal;
+        return true;
+    }
     bool print()
     {
         debug (TRACE) mixin(tracer);
@@ -943,7 +1181,11 @@ private:
         debug (TRACE) mixin(tracer);
         uint saveIndex = index;
         uint collectedNodes = 0;
-        if (sum())
+        if (funcCall())
+        {
+            collectedNodes++;
+        }
+        else if (sum())
         {
             collectedNodes++;
         }
