@@ -175,16 +175,48 @@ private:
             static ifInstStatic = 0;
             auto ifInst = ifInstStatic;
             ifInstStatic++;
+            auto elseIfInst = 0;
+            curFunc.funcBody ~= ".if_" ~ ifInst.to!string ~ ":\n";
+            curFunc.funcBody ~= "    ; if\n";
             compile(node.children[0]);
             curFunc.funcBody ~= "    ; Checking if-expression trueness\n";
             curFunc.funcBody ~= "    pop    eax\n";
             curFunc.funcBody ~= "    test   eax, eax\n";
-            curFunc.funcBody ~= "    je    .if_" ~ ifInst.to!string ~ "Else\n";
-            curFunc.funcBody ~= ".if_" ~ ifInst.to!string ~ ":\n";
+            curFunc.funcBody ~= "    je    .if_" ~ ifInst.to!string ~ "Else_" ~ elseIfInst.to!string ~ "\n";
+            // Compile if contents
             compile(node.children[1]);
+            // Jump to end of if/else if/else block
             curFunc.funcBody ~= "    jmp    .if_" ~ ifInst.to!string ~ "End\n";
-            curFunc.funcBody ~= ".if_" ~ ifInst.to!string ~ "Else:\n";
-            compile(node.children[2]);
+            // Else if/else blocks
+            foreach (child; node.children[2..$])
+            {
+                auto elseNode = cast(ASTNonTerminal)child;
+                auto nodeType = elseNode.name;
+                final switch (nodeType)
+                {
+                case "ELSEIFBLOCK":
+                    curFunc.funcBody ~= ".if_" ~ ifInst.to!string ~ "Else_" ~ elseIfInst.to!string ~ ":\n";
+                    curFunc.funcBody ~= "    ; else if\n";
+                    // Compile else if conditional
+                    compile(elseNode.children[0]);
+                    curFunc.funcBody ~= "    ; Checking else-if-expression trueness\n";
+                    curFunc.funcBody ~= "    pop    eax\n";
+                    curFunc.funcBody ~= "    test   eax, eax\n";
+                    curFunc.funcBody ~= "    je    .if_" ~ ifInst.to!string ~ "Else_" ~ (elseIfInst+1).to!string ~ "\n";
+                    elseIfInst++;
+                    // Compile else if statement
+                    compile(elseNode.children[1]);
+                    // Jump to end of if/else if/else block
+                    curFunc.funcBody ~= "    jmp    .if_" ~ ifInst.to!string ~ "End\n";
+                    break;
+                case "ELSEBLOCK":
+                    curFunc.funcBody ~= ".if_" ~ ifInst.to!string ~ "Else_" ~ elseIfInst.to!string ~ ":\n";
+                    curFunc.funcBody ~= "    ; else\n";
+                    // Compile else statement
+                    compile(elseNode.children[0]);
+                    break;
+                }
+            }
             curFunc.funcBody ~= ".if_" ~ ifInst.to!string ~ "End:\n";
             break;
         case "EXPRESSION":

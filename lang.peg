@@ -17,7 +17,10 @@ statement :: assignment
 
 assignment :: ^identifier #"=" expression #terminator ;
 pass :: #"pass" #terminator ;
-ifblock :: #"if" #"\(" logicExpr #"\)" statement #"else" statement ;
+ifblock :: #"if" #"\(" logicExpr #"\)" statement elseifblock * elseblock ? ;
+elseifblock :: #"else" #"if" #"\(" logicExpr #"\)" statement ;
+elseblock :: #"else" statement ;
+
 whileblock :: #"while" #"\(" logicExpr #"\)" statement ;
 
 

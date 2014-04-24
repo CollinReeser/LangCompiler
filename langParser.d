@@ -615,24 +615,6 @@ private:
             }
             return true;
         }
-        bool ifblockLiteral_4()
-        {
-            debug (TRACE) mixin(tracer);
-            auto reg = ctRegex!(`^else`);
-            auto mat = match(source[index..$], reg);
-            if (mat)
-            {
-                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
-                index += mat.captures[0].length;
-                consumeWhitespace();
-            }
-            else
-            {
-                debug (TRACE) writeln(traceIndent, "  No match.");
-                return false;
-            }
-            return true;
-        }
         uint collectedNodes = 0;
         if (ifblockLiteral_1())
         {
@@ -681,7 +663,138 @@ private:
             index = saveIndex;
             return false;
         }
-        if (ifblockLiteral_4())
+        while (elseifblock())
+        {
+            collectedNodes++;
+        }
+        if (elseblock())
+        {
+            collectedNodes++;
+        }
+        auto nonTerminal = new ASTNonTerminal("IFBLOCK");
+        foreach (node; stack[$-collectedNodes..$])
+        {
+            nonTerminal.addChild(node);
+        }
+        stack = stack[0..$-collectedNodes];
+        stack ~= nonTerminal;
+        return true;
+    }
+    bool elseifblock()
+    {
+        debug (TRACE) mixin(tracer);
+        uint saveIndex = index;
+        bool elseifblockLiteral_1()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^else`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        bool elseifblockLiteral_2()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^if`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        bool elseifblockLiteral_3()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^\(`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        bool elseifblockLiteral_4()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^\)`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        uint collectedNodes = 0;
+        if (elseifblockLiteral_1())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (elseifblockLiteral_2())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (elseifblockLiteral_3())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (logicExpr())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (elseifblockLiteral_4())
         {
         }
         else
@@ -700,7 +813,58 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("IFBLOCK");
+        auto nonTerminal = new ASTNonTerminal("ELSEIFBLOCK");
+        foreach (node; stack[$-collectedNodes..$])
+        {
+            nonTerminal.addChild(node);
+        }
+        stack = stack[0..$-collectedNodes];
+        stack ~= nonTerminal;
+        return true;
+    }
+    bool elseblock()
+    {
+        debug (TRACE) mixin(tracer);
+        uint saveIndex = index;
+        bool elseblockLiteral_1()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^else`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        uint collectedNodes = 0;
+        if (elseblockLiteral_1())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (statement())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        auto nonTerminal = new ASTNonTerminal("ELSEBLOCK");
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);

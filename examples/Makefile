@@ -1,5 +1,5 @@
 
-all: hailstone primes fibonacciIterative funcTest
+all: hailstone primes fibonacciIterative funcTest ifElseIfElse
 
 hailstone.o: hailstone.asm
 	nasm -f elf hailstone.asm
@@ -37,6 +37,15 @@ funcTest.asm: funcTest.lang
 funcTest: funcTest.o funcTestCall.c
 	gcc -m32 -o funcTest funcTestCall.c funcTest.o
 
+ifElseIfElse.o: ifElseIfElse.asm
+	nasm -f elf ifElseIfElse.asm
+
+ifElseIfElse.asm: ifElseIfElse.lang
+	../langCompiler < ifElseIfElse.lang > ifElseIfElse.asm
+
+ifElseIfElse: ifElseIfElse.o ifElseIfElseCall.c
+	gcc -m32 -o ifElseIfElse ifElseIfElseCall.c ifElseIfElse.o
+
 realclean:
 	-rm hailstone.o
 	-rm hailstone.asm
@@ -50,3 +59,6 @@ realclean:
 	-rm funcTest.o
 	-rm funcTest.asm
 	-rm funcTest
+	-rm ifElseIfElse.o
+	-rm ifElseIfElse.asm
+	-rm ifElseIfElse

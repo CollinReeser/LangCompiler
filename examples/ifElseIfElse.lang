@@ -1,0 +1,19 @@
+func ifBlockTest(num)
+{
+    if (num == 0)
+    {
+        return num;
+    }
+    else if (num % 2 == 0)
+    {
+        return num / 2;
+    }
+    else if (num % 3 == 0)
+    {
+        return num * num;
+    }
+    else
+    {
+        return num * 3 + 1;
+    }
+}

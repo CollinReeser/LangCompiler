@@ -1,0 +1,59 @@
+func primesWFuncCall(end)
+{
+    cur = 2;
+    print cur;
+    cur = 3;
+    counter = 3;
+    exit = 0;
+    counterLimit = 0;
+    lim = 10;
+    while (cur <= end)
+    {
+        counterLimit = cur / 2;
+        if (cur < 50)
+        {
+        }
+        else
+        {
+            counterLimit = babylonian(cur, lim);
+        }
+        if (exit == 0)
+        {
+            if (counter <= counterLimit)
+            {
+                if (cur % counter == 0)
+                {
+                    exit = 1;
+                }
+                else
+                {
+                    counter = counter + 2;
+                }
+            }
+            else
+            {
+                print cur;
+                cur = cur + 2;
+                counter = 3;
+            }
+        }
+        else
+        {
+            exit = 0;
+            cur = cur + 2;
+            counter = 3;
+        }
+    }
+}
+
+func babylonian(cur, lim)
+{
+    count = 0;
+    counterLimit = cur / 2;
+    while (count < lim)
+    {
+        counterLimit = (counterLimit + (cur / counterLimit)) / 2;
+        count = count + 1;
+    }
+    return counterLimit;
+}
