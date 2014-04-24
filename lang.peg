@@ -34,12 +34,13 @@ print :: #"print" ^identifier #terminator ;
 
 yield :: #"yield" #terminator ;
 
-expression :: funcCall | sum ;
+expression :: sum;
 sum :: product ^sumOpProduct* ;
 sumOpProduct :: ^sumOp product ;
 product :: value ^mulOpValue* ;
 mulOpValue :: ^mulOp value ;
-value :: num
+value :: funcCall
+       | num
        | parenExpr
        | identifier ;
 parenExpr :: #"\(" logicExpr #"\)" ;

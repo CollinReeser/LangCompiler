@@ -1345,11 +1345,7 @@ private:
         debug (TRACE) mixin(tracer);
         uint saveIndex = index;
         uint collectedNodes = 0;
-        if (funcCall())
-        {
-            collectedNodes++;
-        }
-        else if (sum())
+        if (sum())
         {
             collectedNodes++;
         }
@@ -1521,7 +1517,11 @@ private:
         debug (TRACE) mixin(tracer);
         uint saveIndex = index;
         uint collectedNodes = 0;
-        if (num())
+        if (funcCall())
+        {
+            collectedNodes++;
+        }
+        else if (num())
         {
             collectedNodes++;
         }
