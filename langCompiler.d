@@ -4,7 +4,7 @@ import std.string;
 import std.array;
 import std.string;
 import std.c.stdlib;
-import grammarNode;
+import visitor;
 import langParser;
 
 class LangCompiler
@@ -530,9 +530,11 @@ int main(string[] argv)
     auto topNode = parser.parse();
     if (topNode !is null)
     {
-        auto context = new LangCompiler(topNode);
-        auto code = context.generate();
-        writeln(code);
+        auto printVisitor = new PrintVisitor();
+        printVisitor.visit(cast(ProgramNode)topNode);
+        //auto context = new LangCompiler(topNode);
+        //auto code = context.generate();
+        //writeln(code);
     }
     else
     {

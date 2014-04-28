@@ -3,7 +3,446 @@ import std.regex;
 import std.string;
 import std.array;
 import std.algorithm;
-import grammarNode;
+import visitor;
+void printTree(ASTNode node, string indent = "")
+{
+    if (cast(ASTNonTerminal)node)
+    {
+        writeln(indent, (cast(ASTNonTerminal)node).name);
+        foreach (x; (cast(ASTNonTerminal)node).children)
+        {
+            printTree(x, indent ~ "  ");
+        }
+    }
+    else if (cast(ASTTerminal)node)
+    {
+        writeln(indent, "[", (cast(ASTTerminal)node).token, "]: ",
+            (cast(ASTTerminal)node).index);
+    }
+}
+interface ASTNode
+{
+    void accept(Visitor v);
+}
+abstract class ASTNonTerminal : ASTNode
+{
+    ASTNode[] children;
+    string name;
+    void addChild(ASTNode node)
+    {
+        children ~= node;
+    }
+}
+class ASTTerminal : ASTNode
+{
+    const string token;
+    const uint index;
+    this (string token, uint index)
+    {
+        this.token = token;
+        this.index = index;
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ProgramNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "PROGRAM";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class FuncDefNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "FUNCDEF";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ArgListNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "ARGLIST";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class CommaArgNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "COMMAARG";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class BlockNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "BLOCK";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class StatementNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "STATEMENT";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class AssignmentNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "ASSIGNMENT";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class PassNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "PASS";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class IfblockNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "IFBLOCK";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ElseifblockNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "ELSEIFBLOCK";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ElseblockNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "ELSEBLOCK";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class WhileblockNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "WHILEBLOCK";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ParamListNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "PARAMLIST";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class CommaParamNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "COMMAPARAM";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class FuncCallNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "FUNCCALL";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ReturnStmtNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "RETURNSTMT";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class PrintNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "PRINT";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class YieldNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "YIELD";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ExpressionNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "EXPRESSION";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class SumNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "SUM";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class SumOpProductNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "SUMOPPRODUCT";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ProductNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "PRODUCT";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class MulOpValueNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "MULOPVALUE";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ValueNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "VALUE";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ParenExprNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "PARENEXPR";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class TerminatorNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "TERMINATOR";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class SumOpNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "SUMOP";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class MulOpNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "MULOP";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class NumNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "NUM";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class IdentifierNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "IDENTIFIER";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class LogicExprNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "LOGICEXPR";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class LogicOpLogicRelationshipNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "LOGICOPLOGICRELATIONSHIP";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class LogicRelationshipNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "LOGICRELATIONSHIP";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class RelationOpExpressionNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "RELATIONOPEXPRESSION";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class LogicOpNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "LOGICOP";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class RelationOpNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "RELATIONOP";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
 class Parser
 {
     this (string source)
@@ -74,7 +513,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("PROGRAM");
+        auto nonTerminal = new ProgramNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -151,7 +590,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("FUNCDEF");
+        auto nonTerminal = new FuncDefNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -239,7 +678,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("ARGLIST");
+        auto nonTerminal = new ArgListNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -296,7 +735,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("COMMAARG");
+        auto nonTerminal = new CommaArgNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -368,7 +807,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("BLOCK");
+        auto nonTerminal = new BlockNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -420,7 +859,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("STATEMENT");
+        auto nonTerminal = new StatementNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -497,7 +936,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("ASSIGNMENT");
+        auto nonTerminal = new AssignmentNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -548,7 +987,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("PASS");
+        auto nonTerminal = new PassNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -671,7 +1110,7 @@ private:
         {
             collectedNodes++;
         }
-        auto nonTerminal = new ASTNonTerminal("IFBLOCK");
+        auto nonTerminal = new IfblockNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -813,7 +1252,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("ELSEIFBLOCK");
+        auto nonTerminal = new ElseifblockNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -864,7 +1303,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("ELSEBLOCK");
+        auto nonTerminal = new ElseblockNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -979,7 +1418,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("WHILEBLOCK");
+        auto nonTerminal = new WhileblockNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1061,7 +1500,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("PARAMLIST");
+        auto nonTerminal = new ParamListNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1112,7 +1551,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("COMMAPARAM");
+        auto nonTerminal = new CommaParamNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1152,7 +1591,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("FUNCCALL");
+        auto nonTerminal = new FuncCallNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1213,7 +1652,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("RETURNSTMT");
+        auto nonTerminal = new ReturnStmtNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1280,7 +1719,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("PRINT");
+        auto nonTerminal = new PrintNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1331,7 +1770,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("YIELD");
+        auto nonTerminal = new YieldNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1355,7 +1794,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("EXPRESSION");
+        auto nonTerminal = new ExpressionNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1389,7 +1828,7 @@ private:
             }
             collectedNodes += tempNode.children.length;
         }
-        auto nonTerminal = new ASTNonTerminal("SUM");
+        auto nonTerminal = new SumNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1429,7 +1868,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("SUMOPPRODUCT");
+        auto nonTerminal = new SumOpProductNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1463,7 +1902,7 @@ private:
             }
             collectedNodes += tempNode.children.length;
         }
-        auto nonTerminal = new ASTNonTerminal("PRODUCT");
+        auto nonTerminal = new ProductNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1503,7 +1942,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("MULOPVALUE");
+        auto nonTerminal = new MulOpValueNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1539,7 +1978,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("VALUE");
+        auto nonTerminal = new ValueNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1617,7 +2056,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("PARENEXPR");
+        auto nonTerminal = new ParenExprNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1658,7 +2097,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("TERMINATOR");
+        auto nonTerminal = new TerminatorNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1702,7 +2141,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("SUMOP");
+        auto nonTerminal = new SumOpNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1746,7 +2185,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("MULOP");
+        auto nonTerminal = new MulOpNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1790,7 +2229,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("NUM");
+        auto nonTerminal = new NumNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1834,7 +2273,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("IDENTIFIER");
+        auto nonTerminal = new IdentifierNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1868,7 +2307,7 @@ private:
             }
             collectedNodes += tempNode.children.length;
         }
-        auto nonTerminal = new ASTNonTerminal("LOGICEXPR");
+        auto nonTerminal = new LogicExprNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1908,7 +2347,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("LOGICOPLOGICRELATIONSHIP");
+        auto nonTerminal = new LogicOpLogicRelationshipNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1942,7 +2381,7 @@ private:
             }
             collectedNodes += tempNode.children.length;
         }
-        auto nonTerminal = new ASTNonTerminal("LOGICRELATIONSHIP");
+        auto nonTerminal = new LogicRelationshipNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -1982,7 +2421,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("RELATIONOPEXPRESSION");
+        auto nonTerminal = new RelationOpExpressionNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -2050,7 +2489,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("LOGICOP");
+        auto nonTerminal = new LogicOpNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);
@@ -2214,7 +2653,7 @@ private:
             index = saveIndex;
             return false;
         }
-        auto nonTerminal = new ASTNonTerminal("RELATIONOP");
+        auto nonTerminal = new RelationOpNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);

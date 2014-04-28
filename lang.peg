@@ -1,64 +1,64 @@
-program :: funcDef + ;
+Program :: FuncDef + ;
 
-funcDef :: #"func" ^identifier argList block ;
-argList :: #"\(" ^identifier ? ^commaArg * #"\)" ;
-commaArg :: #"," ^identifier ;
+FuncDef :: #"func" ^Identifier ArgList Block ;
+ArgList :: #"\(" ^Identifier ? ^CommaArg * #"\)" ;
+CommaArg :: #"," ^Identifier ;
 
-block :: #"\{" statement* #"\}" ;
-statement :: assignment
-           | ifblock
-           | whileblock
-           | pass
-           | block
-           | print
-           | yield
-           | returnStmt
+Block :: #"\{" Statement* #"\}" ;
+Statement :: Assignment
+           | Ifblock
+           | Whileblock
+           | Pass
+           | Block
+           | Print
+           | Yield
+           | ReturnStmt
            ;
 
-assignment :: ^identifier #"=" expression #terminator ;
-pass :: #"pass" #terminator ;
-ifblock :: #"if" #"\(" logicExpr #"\)" statement elseifblock * elseblock ? ;
-elseifblock :: #"else" #"if" #"\(" logicExpr #"\)" statement ;
-elseblock :: #"else" statement ;
+Assignment :: ^Identifier #"=" Expression #Terminator ;
+Pass :: #"pass" #Terminator ;
+Ifblock :: #"if" #"\(" LogicExpr #"\)" Statement Elseifblock * Elseblock ? ;
+Elseifblock :: #"else" #"if" #"\(" LogicExpr #"\)" Statement ;
+Elseblock :: #"else" Statement ;
 
-whileblock :: #"while" #"\(" logicExpr #"\)" statement ;
-
-
-paramList :: #"\(" expression ? ^commaParam * #"\)" ;
-commaParam :: #"," expression ;
-funcCall :: ^identifier paramList;
-
-returnStmt :: # "return" expression #terminator ;
-
-print :: #"print" ^identifier #terminator ;
-
-yield :: #"yield" #terminator ;
-
-expression :: sum;
-sum :: product ^sumOpProduct* ;
-sumOpProduct :: ^sumOp product ;
-product :: value ^mulOpValue* ;
-mulOpValue :: ^mulOp value ;
-value :: funcCall
-       | num
-       | parenExpr
-       | identifier ;
-parenExpr :: #"\(" logicExpr #"\)" ;
-
-terminator :: #";" ;
-sumOp :: /[+-]/ ;
-mulOp :: /[*\/%]/ ;
-num :: /[0-9]+(?:\.[0-9]*)?/ ;
-identifier :: /[a-zA-Z_][a-zA-Z0-9_]*/ ;
+Whileblock :: #"while" #"\(" LogicExpr #"\)" Statement ;
 
 
-logicExpr :: logicRelationship ^logicOpLogicRelationship* ;
-logicOpLogicRelationship :: ^logicOp logicRelationship;
-logicRelationship :: expression ^relationOpExpression ? ;
-relationOpExpression :: ^relationOp expression;
-logicOp :: "&&"
+ParamList :: #"\(" Expression ? ^CommaParam * #"\)" ;
+CommaParam :: #"," Expression ;
+FuncCall :: ^Identifier ParamList;
+
+ReturnStmt :: # "return" Expression #Terminator ;
+
+Print :: #"print" ^Identifier #Terminator ;
+
+Yield :: #"yield" #Terminator ;
+
+Expression :: Sum;
+Sum :: Product ^SumOpProduct* ;
+SumOpProduct :: ^SumOp Product ;
+Product :: Value ^MulOpValue* ;
+MulOpValue :: ^MulOp Value ;
+Value :: FuncCall
+       | Num
+       | ParenExpr
+       | Identifier ;
+ParenExpr :: #"\(" LogicExpr #"\)" ;
+
+Terminator :: #";" ;
+SumOp :: /[+-]/ ;
+MulOp :: /[*\/%]/ ;
+Num :: /[0-9]+(?:\.[0-9]*)?/ ;
+Identifier :: /[a-zA-Z_][a-zA-Z0-9_]*/ ;
+
+
+LogicExpr :: LogicRelationship ^LogicOpLogicRelationship* ;
+LogicOpLogicRelationship :: ^LogicOp LogicRelationship;
+LogicRelationship :: Expression ^RelationOpExpression ? ;
+RelationOpExpression :: ^RelationOp Expression;
+LogicOp :: "&&"
          | "\|\|" ;
-relationOp :: "<="
+RelationOp :: "<="
             | ">="
             | "<"
             | ">"
