@@ -1,0 +1,12 @@
+
+func fibRecursive(fibToCalc)
+{
+    if (fibToCalc < 2)
+    {
+        return fibToCalc;
+    }
+    else
+    {
+        return fibRecursive(fibToCalc - 2) + fibRecursive(fibToCalc - 1);
+    }
+}
