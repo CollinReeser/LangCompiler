@@ -378,6 +378,18 @@ class LangCompiler : Visitor
     void visit(YieldNode node)
     {
     }
+    void visit(SpawnNode node)
+    {
+    }
+    void visit(ChanReadNode node)
+    {
+    }
+    void visit(ChanWriteNode node)
+    {
+    }
+    void visit(MakeChanNode node)
+    {
+    }
 
     void visit(ArgListNode node) {}
     void visit(CommaArgNode node) {}

@@ -234,6 +234,50 @@ class PrintNode : ASTNonTerminal
         v.visit(this);
     }
 }
+class SpawnNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "SPAWN";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ChanReadNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "CHANREAD";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class ChanWriteNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "CHANWRITE";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
+class MakeChanNode : ASTNonTerminal
+{
+    this ()
+    {
+        this.name = "MAKECHAN";
+    }
+    void accept(Visitor v)
+    {
+        v.visit(this);
+    }
+}
 class YieldNode : ASTNonTerminal
 {
     this ()
@@ -850,6 +894,22 @@ private:
             collectedNodes++;
         }
         else if (returnStmt())
+        {
+            collectedNodes++;
+        }
+        else if (spawn())
+        {
+            collectedNodes++;
+        }
+        else if (chanRead())
+        {
+            collectedNodes++;
+        }
+        else if (chanWrite())
+        {
+            collectedNodes++;
+        }
+        else if (makeChan())
         {
             collectedNodes++;
         }
@@ -1720,6 +1780,270 @@ private:
             return false;
         }
         auto nonTerminal = new PrintNode();
+        foreach (node; stack[$-collectedNodes..$])
+        {
+            nonTerminal.addChild(node);
+        }
+        stack = stack[0..$-collectedNodes];
+        stack ~= nonTerminal;
+        return true;
+    }
+    bool spawn()
+    {
+        debug (TRACE) mixin(tracer);
+        uint saveIndex = index;
+        bool spawnLiteral_1()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^spawn`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        uint collectedNodes = 0;
+        if (spawnLiteral_1())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (funcCall())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (terminator())
+        {
+            stack = stack[0..$-1];
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        auto nonTerminal = new SpawnNode();
+        foreach (node; stack[$-collectedNodes..$])
+        {
+            nonTerminal.addChild(node);
+        }
+        stack = stack[0..$-collectedNodes];
+        stack ~= nonTerminal;
+        return true;
+    }
+    bool chanRead()
+    {
+        debug (TRACE) mixin(tracer);
+        uint saveIndex = index;
+        bool chanReadLiteral_1()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^<-`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        uint collectedNodes = 0;
+        if (identifier())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (chanReadLiteral_1())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (identifier())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (terminator())
+        {
+            stack = stack[0..$-1];
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        auto nonTerminal = new ChanReadNode();
+        foreach (node; stack[$-collectedNodes..$])
+        {
+            nonTerminal.addChild(node);
+        }
+        stack = stack[0..$-collectedNodes];
+        stack ~= nonTerminal;
+        return true;
+    }
+    bool chanWrite()
+    {
+        debug (TRACE) mixin(tracer);
+        uint saveIndex = index;
+        bool chanWriteLiteral_1()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^->`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        uint collectedNodes = 0;
+        if (identifier())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (chanWriteLiteral_1())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (identifier())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (terminator())
+        {
+            stack = stack[0..$-1];
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        auto nonTerminal = new ChanWriteNode();
+        foreach (node; stack[$-collectedNodes..$])
+        {
+            nonTerminal.addChild(node);
+        }
+        stack = stack[0..$-collectedNodes];
+        stack ~= nonTerminal;
+        return true;
+    }
+    bool makeChan()
+    {
+        debug (TRACE) mixin(tracer);
+        uint saveIndex = index;
+        bool makeChanLiteral_1()
+        {
+            debug (TRACE) mixin(tracer);
+            auto reg = ctRegex!(`^makechan`);
+            auto mat = match(source[index..$], reg);
+            if (mat)
+            {
+                debug (TRACE) writeln(traceIndent, "  Match: [", mat.captures[0], "]");
+                index += mat.captures[0].length;
+                consumeWhitespace();
+            }
+            else
+            {
+                debug (TRACE) writeln(traceIndent, "  No match.");
+                return false;
+            }
+            return true;
+        }
+        uint collectedNodes = 0;
+        if (makeChanLiteral_1())
+        {
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (identifier())
+        {
+            collectedNodes++;
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        if (terminator())
+        {
+            stack = stack[0..$-1];
+        }
+        else
+        {
+            stack = stack[0..$-collectedNodes];
+            index = saveIndex;
+            return false;
+        }
+        auto nonTerminal = new MakeChanNode();
         foreach (node; stack[$-collectedNodes..$])
         {
             nonTerminal.addChild(node);

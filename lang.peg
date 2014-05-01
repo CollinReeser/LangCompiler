@@ -13,6 +13,10 @@ Statement :: Assignment
            | Print
            | Yield
            | ReturnStmt
+           | Spawn
+           | ChanRead
+           | ChanWrite
+           | MakeChan
            ;
 
 Assignment :: ^Identifier #"=" Expression #Terminator ;
@@ -31,6 +35,14 @@ FuncCall :: ^Identifier ParamList;
 ReturnStmt :: # "return" Expression #Terminator ;
 
 Print :: #"print" ^Identifier #Terminator ;
+
+Spawn :: #"spawn" FuncCall #Terminator;
+
+ChanRead :: Identifier #"<-" Identifier #Terminator;
+
+ChanWrite :: Identifier #"->" Identifier #Terminator;
+
+MakeChan :: #"makechan" Identifier #Terminator;
 
 Yield :: #"yield" #Terminator ;
 
