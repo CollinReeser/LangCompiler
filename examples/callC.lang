@@ -1,0 +1,7 @@
+extern square;
+
+func main()
+{
+    x = square(8);
+    print x;
+}

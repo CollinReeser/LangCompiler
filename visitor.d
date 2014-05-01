@@ -4,6 +4,7 @@ import langParser;
 interface Visitor
 {
     void visit(ProgramNode node);
+    void visit(ExternImportNode node);
     void visit(FuncDefNode node);
     void visit(ArgListNode node);
     void visit(CommaArgNode node);
@@ -56,6 +57,16 @@ class PrintVisitor : Visitor
     void visit(ProgramNode node)
     {
         writeln(indent, "PROGRAMNODE");
+        indent ~= "  ";
+        foreach (child; node.children)
+        {
+            child.accept(this);
+        }
+        indent = indent[0..$-2];
+    }
+    void visit(ExternImportNode node)
+    {
+        writeln(indent, "EXTERNIMPORTNODE");
         indent ~= "  ";
         foreach (child; node.children)
         {
