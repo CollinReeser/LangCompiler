@@ -1,3 +1,6 @@
 [submodule "parserGenerator"]
 	path = parserGenerator
 	url = https://github.com/CollinReeser/ParserGenerator.git
+[submodule "greenThreads"]
+	path = greenThreads
+	url = https://github.com/CollinReeser/GreenThreads.git
