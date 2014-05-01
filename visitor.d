@@ -20,6 +20,10 @@ interface Visitor
     void visit(FuncCallNode node);
     void visit(ReturnStmtNode node);
     void visit(PrintNode node);
+    void visit(SpawnNode node);
+    void visit(ChanReadNode node);
+    void visit(ChanWriteNode node);
+    void visit(MakeChanNode node);
     void visit(YieldNode node);
     void visit(ExpressionNode node);
     void visit(SumNode node);
@@ -212,6 +216,46 @@ class PrintVisitor : Visitor
     void visit(PrintNode node)
     {
         writeln(indent, "PRINTNODE");
+        indent ~= "  ";
+        foreach (child; node.children)
+        {
+            child.accept(this);
+        }
+        indent = indent[0..$-2];
+    }
+    void visit(SpawnNode node)
+    {
+        writeln(indent, "SPAWNNODE");
+        indent ~= "  ";
+        foreach (child; node.children)
+        {
+            child.accept(this);
+        }
+        indent = indent[0..$-2];
+    }
+    void visit(ChanReadNode node)
+    {
+        writeln(indent, "CHANREADNODE");
+        indent ~= "  ";
+        foreach (child; node.children)
+        {
+            child.accept(this);
+        }
+        indent = indent[0..$-2];
+    }
+    void visit(ChanWriteNode node)
+    {
+        writeln(indent, "CHANWRITENODE");
+        indent ~= "  ";
+        foreach (child; node.children)
+        {
+            child.accept(this);
+        }
+        indent = indent[0..$-2];
+    }
+    void visit(MakeChanNode node)
+    {
+        writeln(indent, "MAKECHANNODE");
         indent ~= "  ";
         foreach (child; node.children)
         {
