@@ -1,4 +1,6 @@
-Program :: FuncDef + ;
+Program :: ExternImport* FuncDef + ;
+
+ExternImport :: #"extern" ^Identifier #Terminator;
 
 FuncDef :: #"func" ^Identifier ArgList Block ;
 ArgList :: #"\(" ^Identifier ? ^CommaArg * #"\)" ;

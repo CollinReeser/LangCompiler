@@ -378,6 +378,11 @@ class LangCompiler : Visitor
     void visit(YieldNode node)
     {
     }
+    void visit(ExternImportNode node)
+    {
+        auto ident = (cast(ASTTerminal)node.children[0]).token;
+        externs ~= `    extern ` ~ ident ~ "\n";
+    }
 
     void visit(ArgListNode node) {}
     void visit(CommaArgNode node) {}
@@ -400,6 +405,7 @@ private:
 
     ASTNode topNode;
     string genCode;
+    string externs;
     string[string] dataSection;
     FunctionComponents curFunc;
     FunctionComponents[] funcs;
@@ -480,6 +486,7 @@ private:
     {
         genCode = "";
         genCode ~= "    extern printf\n";
+        genCode ~= externs;
         genCode ~= "    SECTION .data\n";
         foreach (seg; dataSection.byKey())
         {
