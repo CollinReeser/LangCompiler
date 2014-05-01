@@ -1,0 +1,11 @@
+func square(val)
+{
+    squareVal = val * val;
+    return squareVal;
+}
+
+func main()
+{
+    x = square(8);
+    print x;
+}

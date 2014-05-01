@@ -1,5 +1,5 @@
 
-all: hailstone primes fibonacciIterative funcTest ifElseIfElse fibRecursive
+all: hailstone primes fibonacciIterative funcTest ifElseIfElse fibRecursive main
 
 hailstone.o: hailstone.asm
 	nasm -f elf hailstone.asm
@@ -55,6 +55,15 @@ fibRecursive.asm: fibRecursive.lang
 fibRecursive: fibRecursive.o fibRecursiveCall.c
 	gcc -m32 -o fibRecursive fibRecursiveCall.c fibRecursive.o
 
+main.o: main.asm
+	nasm -f elf main.asm
+
+main.asm: main.lang
+	../langCompiler < main.lang > main.asm
+
+main: main.o
+	gcc -m32 -o main main.o
+
 realclean:
 	-rm hailstone.o
 	-rm hailstone.asm
@@ -74,3 +83,6 @@ realclean:
 	-rm fibRecursive.o
 	-rm fibRecursive.asm
 	-rm fibRecursive
+	-rm main.o
+	-rm main.asm
+	-rm main
