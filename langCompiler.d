@@ -213,7 +213,7 @@ class LangCompiler : Visitor
     }
     void visit(NumNode node)
     {
-        auto num = (cast(ASTTerminal)node.children[0]).token.dup;
+        auto num = (cast(ASTTerminal)node.children[0]).token.dup.to!string;
         num = (cast(int)num.to!double).to!string;
         curFunc.funcBody ~= "    ; Using literal for expression: " ~ num ~ "\n";
         curFunc.funcBody ~= "    push   dword " ~ num ~ "\n";

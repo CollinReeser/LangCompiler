@@ -19,6 +19,7 @@ Statement :: Assignment
            | ChanRead
            | ChanWrite
            | MakeChan
+           | FuncCall
            ;
 
 Assignment :: ^Identifier #"=" Expression #Terminator ;
